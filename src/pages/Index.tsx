@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Calendar, Sparkles, Users, Target, ArrowRight, Star, Zap, Globe, Shield, Cpu, TrendingUp, Search, Download, ExternalLink, ChevronDown } from 'lucide-react';
-
 interface Tool {
   title: string;
   description: string;
@@ -11,7 +10,6 @@ interface Tool {
   externalText?: string;
   download?: boolean;
 }
-
 interface NewsItem {
   badge: string;
   title: string;
@@ -19,183 +17,158 @@ interface NewsItem {
   date: string;
   icon: React.ComponentType<any>;
 }
-
 interface MainNewsItem {
   title: string;
   description: string;
   badge: string;
   gradient: string;
 }
-
 const Index = () => {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-
-  const toolsData: Tool[] = [
-    {
-      title: "PAMELA",
-      description: "PDP Automated Multilingual Easy Localization Api-based. Translate library and catalog xml in a click. Upload and quickly translate products for Launches without worrying about the html. Export XML will give you a fully localized xml ready to import in SFCC",
-      link: "https://pamela.robinvb.com/",
-      category: "01 Translation",
-    },
-    {
-      title: "PaDeL",
-      description: "Page Designer Localization. Upload and quickly translate Landing pages without worrying about the html. Export XML will give you a fully localized xml ready to import in SFCC. Now with contextual translations and selective source language. The groups created are visibles in the console of the browser.",
-      link: "https://padel.thedec.es/",
-      external: true,
-      externalLink: "https://padel.robinvb.com/",
-      externalText: "-> In case of problem, click here to use the old version",
-      category: "01 Translation",
-    },
-    {
-      title: "NOVA",
-      description: "Alt Text Generator for packshots, <img> html tags in content assets and Page Designer Landing pages.",
-      link: "https://nova.thedec.es",
-      external: true,
-      externalLink: "https://loreal-my.sharepoint.com/:p:/p/robin_edmon/EeMQIG7wO5ZHv5OSDGr0KBkBUCYIVojBKAKakrN1MLbEVQ?e=2hPrt2",
-      externalText: "-> Instructions and Presentation PPT",
-      category: "01 Translation",
-    },
-    {
-      title: "Handlebars Translation",
-      description: "Upload and quickly translate library xml files with handlebars element like acordion or carousel with titles",
-      link: "https://handel.robinvb.com/",
-      category: "01 Translation",
-    },
-    {
-      title: "Page Designer Extract",
-      description: "Upload a full library, add page-id's and download all pages in a separate xml fil or all in one.",
-      link: "tools/PD-downloader/index.html",
-      category: "01 Translation",
-    },
-    {
-      title: "Promotion Filter",
-      description: "Ordenate and filter by date, by discounted product or exclusivity group.",
-      link: "https://maya.thedec.es/",
-      external: true,
-      externalLink: "https://app.powerbi.com/groups/me/apps/3f7ebe31-b5e5-4c1c-8f6d-7deade5a33ed/reports/7ee884bb-e156-47e2-818d-ececa998b18d/ReportSectionb1940416c5bb051977b4?ctid=e4e1abd9-eac7-4a71-ab52-da5c998aa7ba&experience=power-bi",
-      externalText: "-> Filter Orders by Promotions or Coupon Code",
-      category: "04 Promotions & Campaigns",
-    },
-    {
-      title: "PDP CROSS",
-      description: "Create some crossed data table from all SFCC data sources in one. Product Data Analysis, Master Catalalog, Navigation Catalog, along with Price and Stock or even breadcrumbs of each product with it's variants. Can help to have a very good overview of what product is visible on the storefront, and extract excel sheet. Add any attribute you want to the table for an easy comparison, and change the locale you want to pull the data from as well.",
-      link: "tools/PDP-CROSS.html",
-      category: "02 Product",
-    },
-    {
-      title: "Master to Variant or variant to master",
-      description: "Extract all the master IDs from a list of ean uploading the full master-catalog.xml.",
-      link: "tools/master-variants.html",
-      category: "02 Product",
-    },
-    {
-      title: "Staging Review Link Builder",
-      description: "Create multi-links for Markets to review in staging",
-      link: "tools/SFCC-link-staging.html",
-      category: "03 Link Builder",
-    },
-    {
-      title: "FTP Link Builder",
-      description: "Create links for webdav FTP",
-      link: "tools/ftp-link/index.html",
-      category: "03 Link Builder",
-    },
-    {
-      title: "Properties: From JSON to Excel Table",
-      description: "Paste the JSON and get a table.",
-      link: "tools/JSON-Parser/JSON-to-columns.html",
-      external: true,
-      externalLink: "https://loreal.sharepoint.com/:x:/r/sites/-FR-Changerequest/_layouts/15/Doc.aspx?sourcedoc=%7B402E225D-DB72-47D1-985D-F61685769B51%7D&file=changesInProperties.xlsx&action=default&mobileredirect=true&wdOrigin=TEAMS-MAGLEV.p2p_ns.rwc&wdExp=TEAMS-TREATMENT&wdhostclicktime=1729498738375&web=1",
-      externalText: "Changes In Properties Document",
-      category: "05 Data Transformation",
-    },
-    {
-      title: "Price per Capacity",
-      description: "Upload the full master catalog to get the values from the size attribute transformed and pasted in the capacityUnit and capacityValue attributes in ml in default and in L in German.",
-      link: "tools/capacity-valuev2.html",
-      category: "05 Data Transformation",
-    },
-    {
-      title: "KIE PDP Template to XML",
-      description: "Copy-paste from Excel and get XML.",
-      link: "tools/kie-template-pdp/xml-rectifier-template-kie.html",
-      category: "05 Data Transformation",
-    },
-    {
-      title: "LAC Dmi-Emea PID Converter",
-      description: "As there is a mismatch between DMI and EMEA",
-      link: "tools/lac-emea-dmi-id-change.html",
-      external: true,
-      externalLink: "https://loreal-my.sharepoint.com/:x:/p/robin_edmon/EbY75tCYMrpMioq-_91uUHYBlr_0-SXQq6jBtBLTu868NA?e=UMqnj4",
-      externalText: "Excel conversion table",
-      category: "02 Product",
-    },
-    {
-      title: "Product without tabs finder",
-      description: "Find products missing tabs info",
-      link: "tools/sfcc-product-tabs.html",
-      category: "02 Product",
-    },
-    {
-      title: "Extract User Rights",
-      description: "Displays all user info and rights on a table",
-      link: "tools/extract-user-rights.html",
-      category: "04 User Management",
-    },
-    {
-      title: "Merge Products",
-      description: "Download and launch this script in the folder containing all the subfolders/zipfiles of the XML products. It will automatically unzip and extract all XML files and create a new XML file with all the products merged into one catalog file. Just add the catalog-ID and you're good to go. Very good to use with the PDP Translation App for multiple launche, like holiday sets e.g.",
-      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/merge-products.py?csf=1&web=1&e=Qa3NcM",
-      category: "06 Python Scripts",
-      download: true,
-      external: true,
-      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
-      externalText: "Install Python"
-    },
-    {
-      title: "Merge Asset",
-      description: "Download and launch this script in the folder containing all the subfolders/zipfiles of the content assets. It will automatically unzip and extract all XML files and create a new XML file with all the assets merged into one library file (without fodlers). Very good to use with the Page Designer Translation App for multilanguage Landings",
-      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/merge-asset.py?csf=1&web=1&e=UmDO3l",
-      category: "06 Python Scripts",
-      download: true,
-      external: true,
-      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
-      externalText: "Install Python"
-    },
-    {
-      title: "Catalog Namer",
-      description: "Download and launch the script in the folder you get when importing all the catalogs from the Site Import/Export (Administration SFCC). It will extract the name of the folders, rename the XML file inside each folder with the catalog name, and create a folder with all the catalogs together.",
-      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/rename_catalog.py?csf=1&web=1&e=HUwvKH",
-      category: "06 Python Scripts",
-      download: true,
-      external: true,
-      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
-      externalText: "Install Python"
-    },
-    {
-      title: "Library Namer",
-      description: "Download and launch the script in the folder you get when importing all the libraries from the Site Import/Export (Administration SFCC). It will extract the name of the folders, rename the XML file inside each folder with the library name, and create a folder with all the libraries together.",
-      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/rename_library.py?csf=1&web=1&e=bg1nAJ",
-      category: "06 Python Scripts",
-      download: true,
-      external: true,
-      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
-      externalText: "Install Python"
-    },
-    {
-      title: "Replication Fix",
-      description: "This Python script compares two Salesforce B2C Commerce XML product catalogs and identifies discrepancies between them. It extracts all product IDs from each file, regardless of naming, using the Demandware XML namespace. The script then highlights products that are unique to each catalog and outputs the differences in an Excel file. Column headers are automatically named based on the original XML filenames for clarity. Additionally, the script prints a summary showing how many products are shared or exclusive to each file. It's a simple, efficient tool to validate synchronization between staging and production catalogs and catch misrouted product imports.",
-      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/catalogCheck.py?csf=1&web=1&e=nbkvkp",
-      category: "06 Python Scripts",
-      download: true,
-      external: true,
-      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
-      externalText: "Install Python"
-    }
-  ];
+  const toolsData: Tool[] = [{
+    title: "PAMELA",
+    description: "PDP Automated Multilingual Easy Localization Api-based. Translate library and catalog xml in a click. Upload and quickly translate products for Launches without worrying about the html. Export XML will give you a fully localized xml ready to import in SFCC",
+    link: "https://pamela.robinvb.com/",
+    category: "01 Translation"
+  }, {
+    title: "PaDeL",
+    description: "Page Designer Localization. Upload and quickly translate Landing pages without worrying about the html. Export XML will give you a fully localized xml ready to import in SFCC. Now with contextual translations and selective source language. The groups created are visibles in the console of the browser.",
+    link: "https://padel.thedec.es/",
+    external: true,
+    externalLink: "https://padel.robinvb.com/",
+    externalText: "-> In case of problem, click here to use the old version",
+    category: "01 Translation"
+  }, {
+    title: "NOVA",
+    description: "Alt Text Generator for packshots, <img> html tags in content assets and Page Designer Landing pages.",
+    link: "https://nova.thedec.es",
+    external: true,
+    externalLink: "https://loreal-my.sharepoint.com/:p:/p/robin_edmon/EeMQIG7wO5ZHv5OSDGr0KBkBUCYIVojBKAKakrN1MLbEVQ?e=2hPrt2",
+    externalText: "-> Instructions and Presentation PPT",
+    category: "01 Translation"
+  }, {
+    title: "Handlebars Translation",
+    description: "Upload and quickly translate library xml files with handlebars element like acordion or carousel with titles",
+    link: "https://handel.robinvb.com/",
+    category: "01 Translation"
+  }, {
+    title: "Page Designer Extract",
+    description: "Upload a full library, add page-id's and download all pages in a separate xml fil or all in one.",
+    link: "tools/PD-downloader/index.html",
+    category: "01 Translation"
+  }, {
+    title: "Promotion Filter",
+    description: "Ordenate and filter by date, by discounted product or exclusivity group.",
+    link: "https://maya.thedec.es/",
+    external: true,
+    externalLink: "https://app.powerbi.com/groups/me/apps/3f7ebe31-b5e5-4c1c-8f6d-7deade5a33ed/reports/7ee884bb-e156-47e2-818d-ececa998b18d/ReportSectionb1940416c5bb051977b4?ctid=e4e1abd9-eac7-4a71-ab52-da5c998aa7ba&experience=power-bi",
+    externalText: "-> Filter Orders by Promotions or Coupon Code",
+    category: "04 Promotions & Campaigns"
+  }, {
+    title: "PDP CROSS",
+    description: "Create some crossed data table from all SFCC data sources in one. Product Data Analysis, Master Catalalog, Navigation Catalog, along with Price and Stock or even breadcrumbs of each product with it's variants. Can help to have a very good overview of what product is visible on the storefront, and extract excel sheet. Add any attribute you want to the table for an easy comparison, and change the locale you want to pull the data from as well.",
+    link: "tools/PDP-CROSS.html",
+    category: "02 Product"
+  }, {
+    title: "Master to Variant or variant to master",
+    description: "Extract all the master IDs from a list of ean uploading the full master-catalog.xml.",
+    link: "tools/master-variants.html",
+    category: "02 Product"
+  }, {
+    title: "Staging Review Link Builder",
+    description: "Create multi-links for Markets to review in staging",
+    link: "tools/SFCC-link-staging.html",
+    category: "03 Link Builder"
+  }, {
+    title: "FTP Link Builder",
+    description: "Create links for webdav FTP",
+    link: "tools/ftp-link/index.html",
+    category: "03 Link Builder"
+  }, {
+    title: "Properties: From JSON to Excel Table",
+    description: "Paste the JSON and get a table.",
+    link: "tools/JSON-Parser/JSON-to-columns.html",
+    external: true,
+    externalLink: "https://loreal.sharepoint.com/:x:/r/sites/-FR-Changerequest/_layouts/15/Doc.aspx?sourcedoc=%7B402E225D-DB72-47D1-985D-F61685769B51%7D&file=changesInProperties.xlsx&action=default&mobileredirect=true&wdOrigin=TEAMS-MAGLEV.p2p_ns.rwc&wdExp=TEAMS-TREATMENT&wdhostclicktime=1729498738375&web=1",
+    externalText: "Changes In Properties Document",
+    category: "05 Data Transformation"
+  }, {
+    title: "Price per Capacity",
+    description: "Upload the full master catalog to get the values from the size attribute transformed and pasted in the capacityUnit and capacityValue attributes in ml in default and in L in German.",
+    link: "tools/capacity-valuev2.html",
+    category: "05 Data Transformation"
+  }, {
+    title: "KIE PDP Template to XML",
+    description: "Copy-paste from Excel and get XML.",
+    link: "tools/kie-template-pdp/xml-rectifier-template-kie.html",
+    category: "05 Data Transformation"
+  }, {
+    title: "LAC Dmi-Emea PID Converter",
+    description: "As there is a mismatch between DMI and EMEA",
+    link: "tools/lac-emea-dmi-id-change.html",
+    external: true,
+    externalLink: "https://loreal-my.sharepoint.com/:x:/p/robin_edmon/EbY75tCYMrpMioq-_91uUHYBlr_0-SXQq6jBtBLTu868NA?e=UMqnj4",
+    externalText: "Excel conversion table",
+    category: "02 Product"
+  }, {
+    title: "Product without tabs finder",
+    description: "Find products missing tabs info",
+    link: "tools/sfcc-product-tabs.html",
+    category: "02 Product"
+  }, {
+    title: "Extract User Rights",
+    description: "Displays all user info and rights on a table",
+    link: "tools/extract-user-rights.html",
+    category: "04 User Management"
+  }, {
+    title: "Merge Products",
+    description: "Download and launch this script in the folder containing all the subfolders/zipfiles of the XML products. It will automatically unzip and extract all XML files and create a new XML file with all the products merged into one catalog file. Just add the catalog-ID and you're good to go. Very good to use with the PDP Translation App for multiple launche, like holiday sets e.g.",
+    link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/merge-products.py?csf=1&web=1&e=Qa3NcM",
+    category: "06 Python Scripts",
+    download: true,
+    external: true,
+    externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+    externalText: "Install Python"
+  }, {
+    title: "Merge Asset",
+    description: "Download and launch this script in the folder containing all the subfolders/zipfiles of the content assets. It will automatically unzip and extract all XML files and create a new XML file with all the assets merged into one library file (without fodlers). Very good to use with the Page Designer Translation App for multilanguage Landings",
+    link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/merge-asset.py?csf=1&web=1&e=UmDO3l",
+    category: "06 Python Scripts",
+    download: true,
+    external: true,
+    externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+    externalText: "Install Python"
+  }, {
+    title: "Catalog Namer",
+    description: "Download and launch the script in the folder you get when importing all the catalogs from the Site Import/Export (Administration SFCC). It will extract the name of the folders, rename the XML file inside each folder with the catalog name, and create a folder with all the catalogs together.",
+    link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/rename_catalog.py?csf=1&web=1&e=HUwvKH",
+    category: "06 Python Scripts",
+    download: true,
+    external: true,
+    externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+    externalText: "Install Python"
+  }, {
+    title: "Library Namer",
+    description: "Download and launch the script in the folder you get when importing all the libraries from the Site Import/Export (Administration SFCC). It will extract the name of the folders, rename the XML file inside each folder with the library name, and create a folder with all the libraries together.",
+    link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/rename_library.py?csf=1&web=1&e=bg1nAJ",
+    category: "06 Python Scripts",
+    download: true,
+    external: true,
+    externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+    externalText: "Install Python"
+  }, {
+    title: "Replication Fix",
+    description: "This Python script compares two Salesforce B2C Commerce XML product catalogs and identifies discrepancies between them. It extracts all product IDs from each file, regardless of naming, using the Demandware XML namespace. The script then highlights products that are unique to each catalog and outputs the differences in an Excel file. Column headers are automatically named based on the original XML filenames for clarity. Additionally, the script prints a summary showing how many products are shared or exclusive to each file. It's a simple, efficient tool to validate synchronization between staging and production catalogs and catch misrouted product imports.",
+    link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/catalogCheck.py?csf=1&web=1&e=nbkvkp",
+    category: "06 Python Scripts",
+    download: true,
+    external: true,
+    externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+    externalText: "Install Python"
+  }];
 
   // Group tools by category
   const groupedTools = toolsData.reduce((acc: Record<string, Tool[]>, tool) => {
@@ -207,12 +180,7 @@ const Index = () => {
   }, {});
 
   // Filter tools based on search term
-  const filteredTools = toolsData.filter(tool =>
-    tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tool.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  const filteredTools = toolsData.filter(tool => tool.title.toLowerCase().includes(searchTerm.toLowerCase()) || tool.description.toLowerCase().includes(searchTerm.toLowerCase()) || tool.category.toLowerCase().includes(searchTerm.toLowerCase()));
   const filteredGroupedTools = filteredTools.reduce((acc: Record<string, Tool[]>, tool) => {
     if (!acc[tool.category]) {
       acc[tool.category] = [];
@@ -229,7 +197,6 @@ const Index = () => {
     });
     setExpandedCategories(initialExpandedState);
   }, []);
-
   const toggleCategory = (category: string) => {
     setExpandedCategories(prev => ({
       ...prev,
@@ -240,105 +207,87 @@ const Index = () => {
   // Auto-rotate main news banner
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentNewsIndex((prev) => (prev + 1) % 3);
+      setCurrentNewsIndex(prev => (prev + 1) % 3);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  const mainNews: MainNewsItem[] = [
-    {
-      title: "DEC Toolbox Integrates AI: Revolutionizing Content Creation",
-      description: "Explore the new GenAI Content Creator, designed to simplify and accelerate your digital asset production.",
-      badge: "AI Integration",
-      gradient: "from-purple-600 to-blue-600"
-    },
-    {
-      title: "Global Deployment Speed Increased by 300%",
-      description: "Our latest infrastructure updates deliver unprecedented performance across all L'Oréal platforms.",
-      badge: "Performance",
-      gradient: "from-green-600 to-teal-600"
-    },
-    {
-      title: "New Security Framework: Enterprise-Grade Protection",
-      description: "Advanced security measures now protect all toolbox operations with military-grade encryption.",
-      badge: "Security",
-      gradient: "from-red-600 to-orange-600"
-    }
-  ];
-
-  const newsItems: NewsItem[] = [
-    {
-      badge: "ContentFlow",
-      title: "ContentFlow 2.0 Released: Faster Deployments",
-      description: "New update significantly reduces content deployment times for global campaigns.",
-      date: "2025-07-01",
-      icon: Zap
-    },
-    {
-      badge: "AssetLink",
-      title: "AssetLink Now Supports 3D Assets",
-      description: "Expanded capabilities for rich media management across all platforms.",
-      date: "2025-06-25",
-      icon: Cpu
-    },
-    {
-      badge: "GlobalSync",
-      title: "Multi-Region Synchronization Enhanced",
-      description: "Seamless data consistency across all international markets.",
-      date: "2025-06-20",
-      icon: Globe
-    },
-    {
-      badge: "SecureFlow",
-      title: "Advanced Security Protocols Implemented",
-      description: "Enterprise-level security now protects all data transactions.",
-      date: "2025-06-15",
-      icon: Shield
-    },
-    {
-      badge: "Analytics+",
-      title: "Real-Time Performance Insights",
-      description: "New dashboard provides instant visibility into system performance.",
-      date: "2025-06-10",
-      icon: TrendingUp
-    },
-    {
-      badge: "AutoDeploy",
-      title: "Zero-Downtime Deployment System",
-      description: "Continuous deployment without service interruption.",
-      date: "2025-06-05",
-      icon: Star
-    }
-  ];
-
-  const feedbackSteps = [
-    { icon: Target, title: "Submit", description: "Click to share your insights" },
-    { icon: Users, title: "Review", description: "Team evaluates your feedback" },
-    { icon: Sparkles, title: "Build", description: "Solutions are crafted" },
-    { icon: Zap, title: "Deploy", description: "Improvements go live" }
-  ];
-
+  const mainNews: MainNewsItem[] = [{
+    title: "DEC Toolbox Integrates AI: Revolutionizing Content Creation",
+    description: "Explore the new GenAI Content Creator, designed to simplify and accelerate your digital asset production.",
+    badge: "AI Integration",
+    gradient: "from-purple-600 to-blue-600"
+  }, {
+    title: "Global Deployment Speed Increased by 300%",
+    description: "Our latest infrastructure updates deliver unprecedented performance across all L'Oréal platforms.",
+    badge: "Performance",
+    gradient: "from-green-600 to-teal-600"
+  }, {
+    title: "New Security Framework: Enterprise-Grade Protection",
+    description: "Advanced security measures now protect all toolbox operations with military-grade encryption.",
+    badge: "Security",
+    gradient: "from-red-600 to-orange-600"
+  }];
+  const newsItems: NewsItem[] = [{
+    badge: "ContentFlow",
+    title: "ContentFlow 2.0 Released: Faster Deployments",
+    description: "New update significantly reduces content deployment times for global campaigns.",
+    date: "2025-07-01",
+    icon: Zap
+  }, {
+    badge: "AssetLink",
+    title: "AssetLink Now Supports 3D Assets",
+    description: "Expanded capabilities for rich media management across all platforms.",
+    date: "2025-06-25",
+    icon: Cpu
+  }, {
+    badge: "GlobalSync",
+    title: "Multi-Region Synchronization Enhanced",
+    description: "Seamless data consistency across all international markets.",
+    date: "2025-06-20",
+    icon: Globe
+  }, {
+    badge: "SecureFlow",
+    title: "Advanced Security Protocols Implemented",
+    description: "Enterprise-level security now protects all data transactions.",
+    date: "2025-06-15",
+    icon: Shield
+  }, {
+    badge: "Analytics+",
+    title: "Real-Time Performance Insights",
+    description: "New dashboard provides instant visibility into system performance.",
+    date: "2025-06-10",
+    icon: TrendingUp
+  }, {
+    badge: "AutoDeploy",
+    title: "Zero-Downtime Deployment System",
+    description: "Continuous deployment without service interruption.",
+    date: "2025-06-05",
+    icon: Star
+  }];
+  const feedbackSteps = [{
+    icon: Target,
+    title: "Submit",
+    description: "Click to share your insights"
+  }, {
+    icon: Users,
+    title: "Review",
+    description: "Team evaluates your feedback"
+  }, {
+    icon: Sparkles,
+    title: "Build",
+    description: "Solutions are crafted"
+  }, {
+    icon: Zap,
+    title: "Deploy",
+    description: "Improvements go live"
+  }];
   if (selectedTool) {
-    return (
-      <div className="flex h-screen bg-gray-900">
-        <Sidebar 
-          selectedTool={selectedTool} 
-          setSelectedTool={setSelectedTool} 
-          toolsData={toolsData}
-          groupedTools={groupedTools}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          filteredGroupedTools={filteredGroupedTools}
-          expandedCategories={expandedCategories}
-          toggleCategory={toggleCategory}
-        />
+    return <div className="flex h-screen bg-gray-900">
+        <Sidebar selectedTool={selectedTool} setSelectedTool={setSelectedTool} toolsData={toolsData} groupedTools={groupedTools} searchTerm={searchTerm} setSearchTerm={setSearchTerm} filteredGroupedTools={filteredGroupedTools} expandedCategories={expandedCategories} toggleCategory={toggleCategory} />
         <MainContent selectedTool={selectedTool} />
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black text-white overflow-x-hidden">
+  return <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black text-white overflow-x-hidden">
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -358,10 +307,7 @@ const Index = () => {
                 The DEC Toolbox
               </h1>
             </div>
-            <button 
-              onClick={() => setSelectedTool('tools' as any)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/25"
-            >
+            <button onClick={() => setSelectedTool('tools' as any)} className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/25">
               Open Toolbox
             </button>
           </div>
@@ -392,16 +338,11 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in delay-600">
-              <button 
-                onClick={() => setSelectedTool('tools' as any)}
-                className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-blue-500/30 flex items-center"
-              >
+              <button onClick={() => setSelectedTool('tools' as any)} className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-blue-500/30 flex items-center">
                 Explore Tools
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="px-8 py-4 border border-gray-600 rounded-xl font-semibold text-lg hover:border-gray-500 hover:bg-gray-800/50 transition-all duration-300">
-                Watch Demo
-              </button>
+              
             </div>
           </div>
         </section>
@@ -443,14 +384,7 @@ const Index = () => {
                   
                   {/* Progress indicators */}
                   <div className="flex space-x-2 mt-8">
-                    {mainNews.map((_, index) => (
-                      <div
-                        key={index}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                          index === currentNewsIndex ? 'bg-white' : 'bg-white/30'
-                        }`}
-                      />
-                    ))}
+                    {mainNews.map((_, index) => <div key={index} className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentNewsIndex ? 'bg-white' : 'bg-white/30'}`} />)}
                   </div>
                 </div>
               </div>
@@ -458,11 +392,7 @@ const Index = () => {
 
             {/* News Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {newsItems.map((item, index) => (
-                <div
-                  key={index}
-                  className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-6 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-xl hover:shadow-blue-500/10"
-                >
+              {newsItems.map((item, index) => <div key={index} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-6 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:scale-105 backdrop-blur-sm hover:shadow-xl hover:shadow-blue-500/10">
                   <div className="flex items-center justify-between mb-4">
                     <span className="px-3 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full text-sm font-semibold text-blue-300 border border-blue-500/30">
                       {item.badge}
@@ -479,68 +409,22 @@ const Index = () => {
                     <Calendar className="w-4 h-4 mr-2" />
                     {item.date}
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </section>
 
         {/* What is The DEC Section */}
-        <section className="py-20 px-6 bg-gradient-to-r from-gray-900/50 to-slate-900/50 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div>
-                <h2 className="text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  What is The DEC & Its Toolbox?
-                </h2>
-                <div className="space-y-6 text-lg text-gray-300 leading-relaxed">
-                  <p>
-                    The <strong className="text-white">Digital Experience Central (DEC)</strong> team at L'Oréal D2C is the strategic force behind our global web presence. We centralize and optimize operational systems for all L'Oréal group websites.
-                  </p>
-                  <p>
-                    The <strong className="text-blue-400">DEC Toolbox</strong> is our flagship platform, empowering webmasters with advanced automation tools to achieve unparalleled efficiency and precision in every task.
-                  </p>
-                  <p>
-                    From content management to deployment automation, our integrated suite transforms complex workflows into streamlined processes, enabling teams worldwide to focus on innovation rather than repetitive tasks.
-                  </p>
-                </div>
-              </div>
-              <div className="relative">
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { icon: Globe, title: "Global Reach", desc: "Worldwide Operations" },
-                    { icon: Zap, title: "Lightning Fast", desc: "Instant Deployment" },
-                    { icon: Shield, title: "Enterprise Security", desc: "Military-Grade Protection" },
-                    { icon: Users, title: "Team Collaboration", desc: "Unified Workflows" }
-                  ].map((feature, index) => (
-                    <div
-                      key={index}
-                      className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-6 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 group backdrop-blur-sm"
-                    >
-                      <feature.icon className="w-8 h-8 text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
-                      <h3 className="font-bold text-white mb-2">{feature.title}</h3>
-                      <p className="text-sm text-gray-400">{feature.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        
 
         {/* Feedback Process Section */}
         <section className="py-20 px-6">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Your Voice Shapes Our Future
-            </h2>
-            <p className="text-xl text-gray-400 mb-16 max-w-3xl mx-auto">
-              Our streamlined feedback mechanism ensures your suggestions are transformed into action. From a simple click, your insights flow into our development pipeline, driving continuous improvements and new solutions for all webmasters.
-            </p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Your Voice Shapes The Future</h2>
+            <p className="text-xl text-gray-400 mb-16 max-w-3xl mx-auto">Our streamlined feedback flow ensures your suggestions are transformed into action. From a simple click, your insights flow into our development pipeline, driving continuous improvements and new solutions for all webmasters.</p>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              {feedbackSteps.map((step, index) => (
-                <div key={index} className="relative group">
+              {feedbackSteps.map((step, index) => <div key={index} className="relative group">
                   <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-xl p-8 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 backdrop-blur-sm group-hover:transform group-hover:scale-105">
                     <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
                       <step.icon className="w-8 h-8 text-white" />
@@ -548,13 +432,10 @@ const Index = () => {
                     <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
                     <p className="text-gray-400">{step.description}</p>
                   </div>
-                  {index < feedbackSteps.length - 1 && (
-                    <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2">
+                  {index < feedbackSteps.length - 1 && <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2">
                       <ChevronRight className="w-6 h-6 text-gray-600" />
-                    </div>
-                  )}
-                </div>
-              ))}
+                    </div>}
+                </div>)}
             </div>
           </div>
         </section>
@@ -600,8 +481,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
 
 // Enhanced Sidebar Component with dynamic toolsData
@@ -616,15 +496,20 @@ interface SidebarProps {
   expandedCategories: Record<string, boolean>;
   toggleCategory: (category: string) => void;
 }
-
-const Sidebar: React.FC<SidebarProps> = ({ selectedTool, setSelectedTool, toolsData, groupedTools, searchTerm, setSearchTerm, filteredGroupedTools, expandedCategories, toggleCategory }) => {
-  return (
-    <div className="w-80 bg-gray-800 border-r border-gray-700 flex flex-col">
+const Sidebar: React.FC<SidebarProps> = ({
+  selectedTool,
+  setSelectedTool,
+  toolsData,
+  groupedTools,
+  searchTerm,
+  setSearchTerm,
+  filteredGroupedTools,
+  expandedCategories,
+  toggleCategory
+}) => {
+  return <div className="w-80 bg-gray-800 border-r border-gray-700 flex flex-col">
       <div className="p-6 border-b border-gray-700">
-        <button 
-          onClick={() => setSelectedTool(null)}
-          className="flex items-center space-x-3 text-white hover:text-blue-400 transition-colors mb-4"
-        >
+        <button onClick={() => setSelectedTool(null)} className="flex items-center space-x-3 text-white hover:text-blue-400 transition-colors mb-4">
           <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
             <Cpu className="w-5 h-5 text-white" />
           </div>
@@ -634,92 +519,54 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedTool, setSelectedTool, toolsD
         {/* Search Input */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Search tools..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-          />
+          <input type="text" placeholder="Search tools..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
         </div>
       </div>
       
       <div className="flex-1 overflow-y-auto p-4">
-        {Object.entries(filteredGroupedTools).map(([category, tools]) => (
-          <div key={category} className="mb-6">
-            <button
-              onClick={() => toggleCategory(category)}
-              className="flex items-center justify-between w-full text-left text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider hover:text-white transition-colors"
-            >
+        {Object.entries(filteredGroupedTools).map(([category, tools]) => <div key={category} className="mb-6">
+            <button onClick={() => toggleCategory(category)} className="flex items-center justify-between w-full text-left text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider hover:text-white transition-colors">
               <span>{category}</span>
-              <ChevronDown 
-                className={`w-4 h-4 transform transition-transform ${
-                  expandedCategories[category] ? 'rotate-180' : ''
-                }`} 
-              />
+              <ChevronDown className={`w-4 h-4 transform transition-transform ${expandedCategories[category] ? 'rotate-180' : ''}`} />
             </button>
             
-            {expandedCategories[category] && (
-              <div className="space-y-1 pl-2">
-                {tools.map((tool) => (
-                  <button
-                    key={tool.title}
-                    onClick={() => setSelectedTool(tool)}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between group ${
-                      selectedTool?.title === tool.title
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-300 hover:text-white hover:bg-gray-700'
-                    }`}
-                  >
+            {expandedCategories[category] && <div className="space-y-1 pl-2">
+                {tools.map(tool => <button key={tool.title} onClick={() => setSelectedTool(tool)} className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between group ${selectedTool?.title === tool.title ? 'bg-blue-600 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-700'}`}>
                     <span className="truncate">{tool.title}</span>
                     <div className="flex items-center space-x-1 ml-2">
-                      {tool.download && (
-                        <Download className="w-3 h-3 opacity-60" />
-                      )}
-                      {tool.external && (
-                        <ExternalLink className="w-3 h-3 opacity-60" />
-                      )}
+                      {tool.download && <Download className="w-3 h-3 opacity-60" />}
+                      {tool.external && <ExternalLink className="w-3 h-3 opacity-60" />}
                     </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+                  </button>)}
+              </div>}
+          </div>)}
         
-        {Object.keys(filteredGroupedTools).length === 0 && searchTerm && (
-          <div className="text-center text-gray-400 mt-8">
+        {Object.keys(filteredGroupedTools).length === 0 && searchTerm && <div className="text-center text-gray-400 mt-8">
             <p>No tools found matching "{searchTerm}"</p>
-          </div>
-        )}
+          </div>}
       </div>
-    </div>
-  );
+    </div>;
 };
 
 // Enhanced MainContent Component
 interface MainContentProps {
   selectedTool: Tool | null;
 }
-
-const MainContent: React.FC<MainContentProps> = ({ selectedTool }) => {
+const MainContent: React.FC<MainContentProps> = ({
+  selectedTool
+}) => {
   if (!selectedTool || selectedTool === 'tools' as any) {
-    return (
-      <div className="flex-1 p-6 bg-gray-900 flex items-center justify-center">
+    return <div className="flex-1 p-6 bg-gray-900 flex items-center justify-center">
         <div className="text-center text-gray-400">
           <Cpu className="w-16 h-16 mx-auto mb-4 text-blue-400" />
           <h2 className="text-2xl font-bold mb-4 text-white">Welcome to The DEC Toolbox</h2>
           <p className="text-lg">Select a tool from the sidebar to get started</p>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   const isExternalLink = selectedTool.link?.startsWith('http');
   const shouldShowIframe = isExternalLink || selectedTool.link?.startsWith('tools/');
-
-  return (
-    <div className="flex-1 flex flex-col bg-gray-900">
+  return <div className="flex-1 flex flex-col bg-gray-900">
       {/* Tool Header */}
       <div className="bg-gray-800 border-b border-gray-700 p-6">
         <div className="flex items-start justify-between">
@@ -727,53 +574,33 @@ const MainContent: React.FC<MainContentProps> = ({ selectedTool }) => {
             <div className="flex items-center space-x-3 mb-2">
               <h1 className="text-2xl font-bold text-white">{selectedTool.title}</h1>
               <div className="flex items-center space-x-2">
-                {selectedTool.download && (
-                  <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full flex items-center">
+                {selectedTool.download && <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full flex items-center">
                     <Download className="w-3 h-3 mr-1" />
                     Download
-                  </span>
-                )}
-                {selectedTool.external && (
-                  <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full flex items-center">
+                  </span>}
+                {selectedTool.external && <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full flex items-center">
                     <ExternalLink className="w-3 h-3 mr-1" />
                     External
-                  </span>
-                )}
+                  </span>}
               </div>
             </div>
             <p className="text-gray-300 mb-4">{selectedTool.description}</p>
             
             <div className="flex flex-wrap gap-3">
-              <a
-                href={selectedTool.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors flex items-center"
-              >
-                {selectedTool.download ? (
-                  <>
+              <a href={selectedTool.link} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors flex items-center">
+                {selectedTool.download ? <>
                     <Download className="w-4 h-4 mr-2" />
                     Download Tool
-                  </>
-                ) : (
-                  <>
+                  </> : <>
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Open Tool
-                  </>
-                )}
+                  </>}
               </a>
               
-              {selectedTool.external && selectedTool.externalLink && (
-                <a
-                  href={selectedTool.externalLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors flex items-center"
-                >
+              {selectedTool.external && selectedTool.externalLink && <a href={selectedTool.externalLink} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors flex items-center">
                   <ExternalLink className="w-4 h-4 mr-2" />
                   {selectedTool.externalText || 'Additional Resource'}
-                </a>
-              )}
+                </a>}
             </div>
           </div>
         </div>
@@ -781,35 +608,18 @@ const MainContent: React.FC<MainContentProps> = ({ selectedTool }) => {
 
       {/* Tool Content */}
       <div className="flex-1 relative">
-        {shouldShowIframe && !selectedTool.download ? (
-          <iframe
-            src={selectedTool.link}
-            className="w-full h-full border-0"
-            title={selectedTool.title}
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full">
+        {shouldShowIframe && !selectedTool.download ? <iframe src={selectedTool.link} className="w-full h-full border-0" title={selectedTool.title} /> : <div className="flex items-center justify-center h-full">
             <div className="text-center text-gray-400">
               <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center">
-                {selectedTool.download ? (
-                  <Download className="w-12 h-12 text-white" />
-                ) : (
-                  <ExternalLink className="w-12 h-12 text-white" />
-                )}
+                {selectedTool.download ? <Download className="w-12 h-12 text-white" /> : <ExternalLink className="w-12 h-12 text-white" />}
               </div>
               <h3 className="text-xl font-bold text-white mb-2">{selectedTool.title}</h3>
               <p className="text-gray-300 mb-6 max-w-md">
-                {selectedTool.download 
-                  ? "Click the download button above to get this tool"
-                  : "This tool opens in a new window. Click the button above to access it."
-                }
+                {selectedTool.download ? "Click the download button above to get this tool" : "This tool opens in a new window. Click the button above to access it."}
               </p>
             </div>
-          </div>
-        )}
+          </div>}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
