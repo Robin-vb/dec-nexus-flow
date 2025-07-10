@@ -1,10 +1,215 @@
-
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Calendar, Sparkles, Users, Target, ArrowRight, Star, Zap, Globe, Shield, Cpu, TrendingUp } from 'lucide-react';
+import { ChevronRight, Calendar, Sparkles, Users, Target, ArrowRight, Star, Zap, Globe, Shield, Cpu, TrendingUp, Search, Download, ExternalLink, ChevronDown } from 'lucide-react';
 
 const Index = () => {
   const [selectedTool, setSelectedTool] = useState(null);
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [expandedCategories, setExpandedCategories] = useState({});
+
+  const toolsData = [
+    {
+      title: "PAMELA",
+      description: "PDP Automated Multilingual Easy Localization Api-based. Translate library and catalog xml in a click. Upload and quickly translate products for Launches without worrying about the html. Export XML will give you a fully localized xml ready to import in SFCC",
+      link: "https://pamela.robinvb.com/",
+      category: "01 Translation",
+    },
+    {
+      title: "PaDeL",
+      description: "Page Designer Localization. Upload and quickly translate Landing pages without worrying about the html. Export XML will give you a fully localized xml ready to import in SFCC. Now with contextual translations and selective source language. The groups created are visibles in the console of the browser.",
+      link: "https://padel.thedec.es/",
+      external: true,
+      externalLink: "https://padel.robinvb.com/",
+      externalText: "-> In case of problem, click here to use the old version",
+      category: "01 Translation",
+    },
+    {
+      title: "NOVA",
+      description: "Alt Text Generator for packshots, <img> html tags in content assets and Page Designer Landing pages.",
+      link: "https://nova.thedec.es",
+      external: true,
+      externalLink: "https://loreal-my.sharepoint.com/:p:/p/robin_edmon/EeMQIG7wO5ZHv5OSDGr0KBkBUCYIVojBKAKakrN1MLbEVQ?e=2hPrt2",
+      externalText: "-> Instructions and Presentation PPT",
+      category: "01 Translation",
+    },
+    {
+      title: "Handlebars Translation",
+      description: "Upload and quickly translate library xml files with handlebars element like acordion or carousel with titles",
+      link: "https://handel.robinvb.com/",
+      category: "01 Translation",
+    },
+    {
+      title: "Page Designer Extract",
+      description: "Upload a full library, add page-id's and download all pages in a separate xml fil or all in one.",
+      link: "tools/PD-downloader/index.html",
+      category: "01 Translation",
+    },
+    {
+      title: "Promotion Filter",
+      description: "Ordenate and filter by date, by discounted product or exclusivity group.",
+      link: "https://maya.thedec.es/",
+      external: true,
+      externalLink: "https://app.powerbi.com/groups/me/apps/3f7ebe31-b5e5-4c1c-8f6d-7deade5a33ed/reports/7ee884bb-e156-47e2-818d-ececa998b18d/ReportSectionb1940416c5bb051977b4?ctid=e4e1abd9-eac7-4a71-ab52-da5c998aa7ba&experience=power-bi",
+      externalText: "-> Filter Orders by Promotions or Coupon Code",
+      category: "04 Promotions & Campaigns",
+    },
+    {
+      title: "PDP CROSS",
+      description: "Create some crossed data table from all SFCC data sources in one. Product Data Analysis, Master Catalalog, Navigation Catalog, along with Price and Stock or even breadcrumbs of each product with it's variants. Can help to have a very good overview of what product is visible on the storefront, and extract excel sheet. Add any attribute you want to the table for an easy comparison, and change the locale you want to pull the data from as well.",
+      link: "tools/PDP-CROSS.html",
+      category: "02 Product",
+    },
+    {
+      title: "Master to Variant or variant to master",
+      description: "Extract all the master IDs from a list of ean uploading the full master-catalog.xml.",
+      link: "tools/master-variants.html",
+      category: "02 Product",
+    },
+    {
+      title: "Staging Review Link Builder",
+      description: "Create multi-links for Markets to review in staging",
+      link: "tools/SFCC-link-staging.html",
+      category: "03 Link Builder",
+    },
+    {
+      title: "FTP Link Builder",
+      description: "Create links for webdav FTP",
+      link: "tools/ftp-link/index.html",
+      category: "03 Link Builder",
+    },
+    {
+      title: "Properties: From JSON to Excel Table",
+      description: "Paste the JSON and get a table.",
+      link: "tools/JSON-Parser/JSON-to-columns.html",
+      external: true,
+      externalLink: "https://loreal.sharepoint.com/:x:/r/sites/-FR-Changerequest/_layouts/15/Doc.aspx?sourcedoc=%7B402E225D-DB72-47D1-985D-F61685769B51%7D&file=changesInProperties.xlsx&action=default&mobileredirect=true&wdOrigin=TEAMS-MAGLEV.p2p_ns.rwc&wdExp=TEAMS-TREATMENT&wdhostclicktime=1729498738375&web=1",
+      externalText: "Changes In Properties Document",
+      category: "05 Data Transformation",
+    },
+    {
+      title: "Price per Capacity",
+      description: "Upload the full master catalog to get the values from the size attribute transformed and pasted in the capacityUnit and capacityValue attributes in ml in default and in L in German.",
+      link: "tools/capacity-valuev2.html",
+      category: "05 Data Transformation",
+    },
+    {
+      title: "KIE PDP Template to XML",
+      description: "Copy-paste from Excel and get XML.",
+      link: "tools/kie-template-pdp/xml-rectifier-template-kie.html",
+      category: "05 Data Transformation",
+    },
+    {
+      title: "LAC Dmi-Emea PID Converter",
+      description: "As there is a mismatch between DMI and EMEA",
+      link: "tools/lac-emea-dmi-id-change.html",
+      external: true,
+      externalLink: "https://loreal-my.sharepoint.com/:x:/p/robin_edmon/EbY75tCYMrpMioq-_91uUHYBlr_0-SXQq6jBtBLTu868NA?e=UMqnj4",
+      externalText: "Excel conversion table",
+      category: "02 Product",
+    },
+    {
+      title: "Product without tabs finder",
+      description: "Find products missing tabs info",
+      link: "tools/sfcc-product-tabs.html",
+      category: "02 Product",
+    },
+    {
+      title: "Extract User Rights",
+      description: "Displays all user info and rights on a table",
+      link: "tools/extract-user-rights.html",
+      category: "04 User Management",
+    },
+    {
+      title: "Merge Products",
+      description: "Download and launch this script in the folder containing all the subfolders/zipfiles of the XML products. It will automatically unzip and extract all XML files and create a new XML file with all the products merged into one catalog file. Just add the catalog-ID and you're good to go. Very good to use with the PDP Translation App for multiple launche, like holiday sets e.g.",
+      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/merge-products.py?csf=1&web=1&e=Qa3NcM",
+      category: "06 Python Scripts",
+      download: true,
+      external: true,
+      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+      externalText: "Install Python"
+    },
+    {
+      title: "Merge Asset",
+      description: "Download and launch this script in the folder containing all the subfolders/zipfiles of the content assets. It will automatically unzip and extract all XML files and create a new XML file with all the assets merged into one library file (without fodlers). Very good to use with the Page Designer Translation App for multilanguage Landings",
+      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/merge-asset.py?csf=1&web=1&e=UmDO3l",
+      category: "06 Python Scripts",
+      download: true,
+      external: true,
+      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+      externalText: "Install Python"
+    },
+    {
+      title: "Catalog Namer",
+      description: "Download and launch the script in the folder you get when importing all the catalogs from the Site Import/Export (Administration SFCC). It will extract the name of the folders, rename the XML file inside each folder with the catalog name, and create a folder with all the catalogs together.",
+      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/rename_catalog.py?csf=1&web=1&e=HUwvKH",
+      category: "06 Python Scripts",
+      download: true,
+      external: true,
+      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+      externalText: "Install Python"
+    },
+    {
+      title: "Library Namer",
+      description: "Download and launch the script in the folder you get when importing all the libraries from the Site Import/Export (Administration SFCC). It will extract the name of the folders, rename the XML file inside each folder with the library name, and create a folder with all the libraries together.",
+      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/rename_library.py?csf=1&web=1&e=bg1nAJ",
+      category: "06 Python Scripts",
+      download: true,
+      external: true,
+      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+      externalText: "Install Python"
+    },
+    {
+      title: "Replication Fix",
+      description: "This Python script compares two Salesforce B2C Commerce XML product catalogs and identifies discrepancies between them. It extracts all product IDs from each file, regardless of naming, using the Demandware XML namespace. The script then highlights products that are unique to each catalog and outputs the differences in an Excel file. Column headers are automatically named based on the original XML filenames for clarity. Additionally, the script prints a summary showing how many products are shared or exclusive to each file. It's a simple, efficient tool to validate synchronization between staging and production catalogs and catch misrouted product imports.",
+      link: "https://loreal.sharepoint.com/:u:/r/sites/DEC/Documentos%20compartidos/9.%20Webmastering/Shared-toolbox/tools/py/catalogCheck.py?csf=1&web=1&e=nbkvkp",
+      category: "06 Python Scripts",
+      download: true,
+      external: true,
+      externalLink: "https://www.python.org/ftp/python/3.13.2/python-3.13.2-amd64.exe",
+      externalText: "Install Python"
+    }
+  ];
+
+  // Group tools by category
+  const groupedTools = toolsData.reduce((acc, tool) => {
+    if (!acc[tool.category]) {
+      acc[tool.category] = [];
+    }
+    acc[tool.category].push(tool);
+    return acc;
+  }, {});
+
+  // Filter tools based on search term
+  const filteredTools = toolsData.filter(tool =>
+    tool.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tool.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tool.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredGroupedTools = filteredTools.reduce((acc, tool) => {
+    if (!acc[tool.category]) {
+      acc[tool.category] = [];
+    }
+    acc[tool.category].push(tool);
+    return acc;
+  }, {});
+
+  // Initialize expanded categories
+  useEffect(() => {
+    const initialExpandedState = {};
+    Object.keys(groupedTools).forEach(category => {
+      initialExpandedState[category] = true;
+    });
+    setExpandedCategories(initialExpandedState);
+  }, []);
+
+  const toggleCategory = (category) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
 
   // Auto-rotate main news banner
   useEffect(() => {
@@ -87,15 +292,20 @@ const Index = () => {
     { icon: Zap, title: "Deploy", description: "Improvements go live" }
   ];
 
-  const tools = [
-    "ContentFlow", "AssetLink", "GlobalSync", "SecureFlow", "Analytics+", 
-    "AutoDeploy", "MediaHub", "CampaignManager", "DataBridge", "WorkflowPro"
-  ];
-
   if (selectedTool) {
     return (
       <div className="flex h-screen bg-gray-900">
-        <Sidebar selectedTool={selectedTool} setSelectedTool={setSelectedTool} tools={tools} />
+        <Sidebar 
+          selectedTool={selectedTool} 
+          setSelectedTool={setSelectedTool} 
+          toolsData={toolsData}
+          groupedTools={groupedTools}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          filteredGroupedTools={filteredGroupedTools}
+          expandedCategories={expandedCategories}
+          toggleCategory={toggleCategory}
+        />
         <MainContent selectedTool={selectedTool} />
       </div>
     );
@@ -368,52 +578,193 @@ const Index = () => {
   );
 };
 
-// Sidebar Component (preserved functionality)
-const Sidebar = ({ selectedTool, setSelectedTool, tools }) => {
+// Enhanced Sidebar Component with dynamic toolsData
+const Sidebar = ({ selectedTool, setSelectedTool, toolsData, groupedTools, searchTerm, setSearchTerm, filteredGroupedTools, expandedCategories, toggleCategory }) => {
   return (
-    <div className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
+    <div className="w-80 bg-gray-800 border-r border-gray-700 flex flex-col">
       <div className="p-6 border-b border-gray-700">
         <button 
           onClick={() => setSelectedTool(null)}
-          className="flex items-center space-x-3 text-white hover:text-blue-400 transition-colors"
+          className="flex items-center space-x-3 text-white hover:text-blue-400 transition-colors mb-4"
         >
           <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
             <Cpu className="w-5 h-5 text-white" />
           </div>
           <span className="font-bold">DEC Toolbox</span>
         </button>
-      </div>
-      <div className="flex-1 p-4">
-        <h3 className="text-gray-400 text-sm font-semibold mb-4 uppercase tracking-wider">Tools</h3>
-        <div className="space-y-1">
-          {tools.map((tool) => (
-            <button
-              key={tool}
-              onClick={() => setSelectedTool(tool)}
-              className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                selectedTool === tool
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-300 hover:text-white hover:bg-gray-700'
-              }`}
-            >
-              {tool}
-            </button>
-          ))}
+        
+        {/* Search Input */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search tools..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
         </div>
+      </div>
+      
+      <div className="flex-1 overflow-y-auto p-4">
+        {Object.entries(filteredGroupedTools).map(([category, tools]) => (
+          <div key={category} className="mb-6">
+            <button
+              onClick={() => toggleCategory(category)}
+              className="flex items-center justify-between w-full text-left text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider hover:text-white transition-colors"
+            >
+              <span>{category}</span>
+              <ChevronDown 
+                className={`w-4 h-4 transform transition-transform ${
+                  expandedCategories[category] ? 'rotate-180' : ''
+                }`} 
+              />
+            </button>
+            
+            {expandedCategories[category] && (
+              <div className="space-y-1 pl-2">
+                {tools.map((tool) => (
+                  <button
+                    key={tool.title}
+                    onClick={() => setSelectedTool(tool)}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors flex items-center justify-between group ${
+                      selectedTool?.title === tool.title
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                    }`}
+                  >
+                    <span className="truncate">{tool.title}</span>
+                    <div className="flex items-center space-x-1 ml-2">
+                      {tool.download && (
+                        <Download className="w-3 h-3 opacity-60" />
+                      )}
+                      {tool.external && (
+                        <ExternalLink className="w-3 h-3 opacity-60" />
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+        
+        {Object.keys(filteredGroupedTools).length === 0 && searchTerm && (
+          <div className="text-center text-gray-400 mt-8">
+            <p>No tools found matching "{searchTerm}"</p>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-// MainContent Component (preserved functionality)
+// Enhanced MainContent Component
 const MainContent = ({ selectedTool }) => {
-  return (
-    <div className="flex-1 p-6 bg-gray-900">
-      <div className="bg-gray-800 rounded-lg h-full flex items-center justify-center">
+  if (!selectedTool || selectedTool === 'tools') {
+    return (
+      <div className="flex-1 p-6 bg-gray-900 flex items-center justify-center">
         <div className="text-center text-gray-400">
-          <h2 className="text-2xl font-bold mb-4">{selectedTool}</h2>
-          <p>Tool interface would be loaded here</p>
+          <Cpu className="w-16 h-16 mx-auto mb-4 text-blue-400" />
+          <h2 className="text-2xl font-bold mb-4 text-white">Welcome to The DEC Toolbox</h2>
+          <p className="text-lg">Select a tool from the sidebar to get started</p>
         </div>
+      </div>
+    );
+  }
+
+  const isExternalLink = selectedTool.link?.startsWith('http');
+  const shouldShowIframe = isExternalLink || selectedTool.link?.startsWith('tools/');
+
+  return (
+    <div className="flex-1 flex flex-col bg-gray-900">
+      {/* Tool Header */}
+      <div className="bg-gray-800 border-b border-gray-700 p-6">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center space-x-3 mb-2">
+              <h1 className="text-2xl font-bold text-white">{selectedTool.title}</h1>
+              <div className="flex items-center space-x-2">
+                {selectedTool.download && (
+                  <span className="px-2 py-1 bg-green-600 text-white text-xs rounded-full flex items-center">
+                    <Download className="w-3 h-3 mr-1" />
+                    Download
+                  </span>
+                )}
+                {selectedTool.external && (
+                  <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full flex items-center">
+                    <ExternalLink className="w-3 h-3 mr-1" />
+                    External
+                  </span>
+                )}
+              </div>
+            </div>
+            <p className="text-gray-300 mb-4">{selectedTool.description}</p>
+            
+            <div className="flex flex-wrap gap-3">
+              <a
+                href={selectedTool.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors flex items-center"
+              >
+                {selectedTool.download ? (
+                  <>
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Tool
+                  </>
+                ) : (
+                  <>
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Open Tool
+                  </>
+                )}
+              </a>
+              
+              {selectedTool.external && selectedTool.externalLink && (
+                <a
+                  href={selectedTool.externalLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors flex items-center"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  {selectedTool.externalText || 'Additional Resource'}
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tool Content */}
+      <div className="flex-1 relative">
+        {shouldShowIframe && !selectedTool.download ? (
+          <iframe
+            src={selectedTool.link}
+            className="w-full h-full border-0"
+            title={selectedTool.title}
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center text-gray-400">
+              <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mb-6 flex items-center justify-center">
+                {selectedTool.download ? (
+                  <Download className="w-12 h-12 text-white" />
+                ) : (
+                  <ExternalLink className="w-12 h-12 text-white" />
+                )}
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">{selectedTool.title}</h3>
+              <p className="text-gray-300 mb-6 max-w-md">
+                {selectedTool.download 
+                  ? "Click the download button above to get this tool"
+                  : "This tool opens in a new window. Click the button above to access it."
+                }
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
