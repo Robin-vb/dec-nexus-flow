@@ -1,13 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Calendar, Sparkles, Users, Target, ArrowRight, Star, Zap, Globe, Shield, Cpu, TrendingUp, Search, Download, ExternalLink, ChevronDown } from 'lucide-react';
 
+interface Tool {
+  title: string;
+  description: string;
+  link: string;
+  category: string;
+  external?: boolean;
+  externalLink?: string;
+  externalText?: string;
+  download?: boolean;
+}
+
+interface NewsItem {
+  badge: string;
+  title: string;
+  description: string;
+  date: string;
+  icon: React.ComponentType<any>;
+}
+
+interface MainNewsItem {
+  title: string;
+  description: string;
+  badge: string;
+  gradient: string;
+}
+
 const Index = () => {
-  const [selectedTool, setSelectedTool] = useState(null);
+  const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedCategories, setExpandedCategories] = useState({});
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
-  const toolsData = [
+  const toolsData: Tool[] = [
     {
       title: "PAMELA",
       description: "PDP Automated Multilingual Easy Localization Api-based. Translate library and catalog xml in a click. Upload and quickly translate products for Launches without worrying about the html. Export XML will give you a fully localized xml ready to import in SFCC",
@@ -172,7 +198,7 @@ const Index = () => {
   ];
 
   // Group tools by category
-  const groupedTools = toolsData.reduce((acc, tool) => {
+  const groupedTools = toolsData.reduce((acc: Record<string, Tool[]>, tool) => {
     if (!acc[tool.category]) {
       acc[tool.category] = [];
     }
@@ -187,7 +213,7 @@ const Index = () => {
     tool.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredGroupedTools = filteredTools.reduce((acc, tool) => {
+  const filteredGroupedTools = filteredTools.reduce((acc: Record<string, Tool[]>, tool) => {
     if (!acc[tool.category]) {
       acc[tool.category] = [];
     }
@@ -197,14 +223,14 @@ const Index = () => {
 
   // Initialize expanded categories
   useEffect(() => {
-    const initialExpandedState = {};
+    const initialExpandedState: Record<string, boolean> = {};
     Object.keys(groupedTools).forEach(category => {
       initialExpandedState[category] = true;
     });
     setExpandedCategories(initialExpandedState);
   }, []);
 
-  const toggleCategory = (category) => {
+  const toggleCategory = (category: string) => {
     setExpandedCategories(prev => ({
       ...prev,
       [category]: !prev[category]
@@ -219,7 +245,7 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const mainNews = [
+  const mainNews: MainNewsItem[] = [
     {
       title: "DEC Toolbox Integrates AI: Revolutionizing Content Creation",
       description: "Explore the new GenAI Content Creator, designed to simplify and accelerate your digital asset production.",
@@ -240,7 +266,7 @@ const Index = () => {
     }
   ];
 
-  const newsItems = [
+  const newsItems: NewsItem[] = [
     {
       badge: "ContentFlow",
       title: "ContentFlow 2.0 Released: Faster Deployments",
@@ -333,7 +359,7 @@ const Index = () => {
               </h1>
             </div>
             <button 
-              onClick={() => setSelectedTool('tools')}
+              onClick={() => setSelectedTool('tools' as any)}
               className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/25"
             >
               Open Toolbox
@@ -367,7 +393,7 @@ const Index = () => {
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in delay-600">
               <button 
-                onClick={() => setSelectedTool('tools')}
+                onClick={() => setSelectedTool('tools' as any)}
                 className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-blue-500/30 flex items-center"
               >
                 Explore Tools
@@ -579,7 +605,19 @@ const Index = () => {
 };
 
 // Enhanced Sidebar Component with dynamic toolsData
-const Sidebar = ({ selectedTool, setSelectedTool, toolsData, groupedTools, searchTerm, setSearchTerm, filteredGroupedTools, expandedCategories, toggleCategory }) => {
+interface SidebarProps {
+  selectedTool: Tool | null;
+  setSelectedTool: (tool: Tool | null) => void;
+  toolsData: Tool[];
+  groupedTools: Record<string, Tool[]>;
+  searchTerm: string;
+  setSearchTerm: (searchTerm: string) => void;
+  filteredGroupedTools: Record<string, Tool[]>;
+  expandedCategories: Record<string, boolean>;
+  toggleCategory: (category: string) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ selectedTool, setSelectedTool, toolsData, groupedTools, searchTerm, setSearchTerm, filteredGroupedTools, expandedCategories, toggleCategory }) => {
   return (
     <div className="w-80 bg-gray-800 border-r border-gray-700 flex flex-col">
       <div className="p-6 border-b border-gray-700">
@@ -660,8 +698,12 @@ const Sidebar = ({ selectedTool, setSelectedTool, toolsData, groupedTools, searc
 };
 
 // Enhanced MainContent Component
-const MainContent = ({ selectedTool }) => {
-  if (!selectedTool || selectedTool === 'tools') {
+interface MainContentProps {
+  selectedTool: Tool | null;
+}
+
+const MainContent: React.FC<MainContentProps> = ({ selectedTool }) => {
+  if (!selectedTool || selectedTool === 'tools' as any) {
     return (
       <div className="flex-1 p-6 bg-gray-900 flex items-center justify-center">
         <div className="text-center text-gray-400">
