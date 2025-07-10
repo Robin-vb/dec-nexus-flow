@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Calendar, Sparkles, Users, Target, ArrowRight, Star, Zap, Globe, Shield, Cpu, TrendingUp, Search, Download, ExternalLink, ChevronDown } from 'lucide-react';
+
 interface Tool {
   title: string;
   description: string;
@@ -10,6 +11,7 @@ interface Tool {
   externalText?: string;
   download?: boolean;
 }
+
 interface NewsItem {
   badge: string;
   title: string;
@@ -17,17 +19,20 @@ interface NewsItem {
   date: string;
   icon: React.ComponentType<any>;
 }
+
 interface MainNewsItem {
   title: string;
   description: string;
   badge: string;
   gradient: string;
 }
+
 const Index = () => {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+
   const toolsData: Tool[] = [{
     title: "PAMELA",
     description: "PDP Automated Multilingual Easy Localization Api-based. Translate library and catalog xml in a click. Upload and quickly translate products for Launches without worrying about the html. Export XML will give you a fully localized xml ready to import in SFCC",
@@ -267,7 +272,7 @@ const Index = () => {
   const feedbackSteps = [{
     icon: Target,
     title: "Submit",
-    description: "Click to share your insights"
+    description: "Submit"
   }, {
     icon: Users,
     title: "Review",
@@ -281,6 +286,7 @@ const Index = () => {
     title: "Deploy",
     description: "Improvements go live"
   }];
+
   if (selectedTool) {
     return <div className="flex h-screen bg-gray-900">
         <Sidebar selectedTool={selectedTool} setSelectedTool={setSelectedTool} toolsData={toolsData} groupedTools={groupedTools} searchTerm={searchTerm} setSearchTerm={setSearchTerm} filteredGroupedTools={filteredGroupedTools} expandedCategories={expandedCategories} toggleCategory={toggleCategory} />
@@ -414,13 +420,10 @@ const Index = () => {
           </div>
         </section>
 
-        {/* What is The DEC Section */}
-        
-
         {/* Feedback Process Section */}
         <section className="py-20 px-6">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Your Voice Shapes The Future</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Share your feedbacks</h2>
             <p className="text-xl text-gray-400 mb-16 max-w-3xl mx-auto">Our streamlined feedback flow ensures your suggestions are transformed into action. From a simple click, your insights flow into our development pipeline, driving continuous improvements and new solutions for all webmasters.</p>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -430,7 +433,13 @@ const Index = () => {
                       <step.icon className="w-8 h-8 text-white" />
                     </div>
                     <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
-                    <p className="text-gray-400">{step.description}</p>
+                    {step.title === "Submit" ? (
+                      <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/25">
+                        Submit
+                      </button>
+                    ) : (
+                      <p className="text-gray-400">{step.description}</p>
+                    )}
                   </div>
                   {index < feedbackSteps.length - 1 && <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2">
                       <ChevronRight className="w-6 h-6 text-gray-600" />
