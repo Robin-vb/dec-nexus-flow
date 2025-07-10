@@ -217,58 +217,60 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
   const mainNews: MainNewsItem[] = [{
-    title: "DEC Toolbox Integrates AI: Revolutionizing Content Creation",
-    description: "Explore the new GenAI Content Creator, designed to simplify and accelerate your digital asset production.",
-    badge: "AI Integration",
-    gradient: "from-purple-600 to-blue-600"
+    title: "PAMELA Translation Tool: Revolutionizing Multilingual Content",
+    description: "Automated PDP translation system now supports instant XML localization with one-click deployment to SFCC platforms.",
+    badge: "Translation",
+    gradient: "from-blue-600 to-purple-600"
   }, {
-    title: "Global Deployment Speed Increased by 300%",
-    description: "Our latest infrastructure updates deliver unprecedented performance across all L'Oréal platforms.",
-    badge: "Performance",
-    gradient: "from-green-600 to-teal-600"
+    title: "PaDeL Landing Page Localization Enhanced",
+    description: "New contextual translation features and selective source language support for Page Designer content.",
+    badge: "Localization",
+    gradient: "from-purple-600 to-blue-700"
   }, {
-    title: "New Security Framework: Enterprise-Grade Protection",
-    description: "Advanced security measures now protect all toolbox operations with military-grade encryption.",
-    badge: "Security",
-    gradient: "from-red-600 to-orange-600"
+    title: "NOVA Alt Text Generator: AI-Powered Accessibility",
+    description: "Advanced AI generates perfect alt text for packshots and Page Designer assets automatically.",
+    badge: "AI Tools",
+    gradient: "from-blue-700 to-purple-700"
   }];
+
   const newsItems: NewsItem[] = [{
-    badge: "ContentFlow",
-    title: "ContentFlow 2.0 Released: Faster Deployments",
-    description: "New update significantly reduces content deployment times for global campaigns.",
+    badge: "Translation",
+    title: "PAMELA 2.0: Faster XML Processing",
+    description: "New update significantly reduces translation processing times for catalog imports.",
     date: "2025-07-01",
     icon: Zap
   }, {
-    badge: "AssetLink",
-    title: "AssetLink Now Supports 3D Assets",
-    description: "Expanded capabilities for rich media management across all platforms.",
+    badge: "Page Designer",
+    title: "PaDeL Now Supports Complex Components",
+    description: "Enhanced capabilities for translating accordion and carousel elements.",
     date: "2025-06-25",
     icon: Cpu
   }, {
-    badge: "GlobalSync",
-    title: "Multi-Region Synchronization Enhanced",
-    description: "Seamless data consistency across all international markets.",
+    badge: "Product Tools",
+    title: "PDP CROSS: Multi-Source Data Analysis",
+    description: "New dashboard combines catalog, pricing, and stock data in one view.",
     date: "2025-06-20",
     icon: Globe
   }, {
-    badge: "SecureFlow",
-    title: "Advanced Security Protocols Implemented",
-    description: "Enterprise-level security now protects all data transactions.",
+    badge: "Automation",
+    title: "Python Scripts Collection Expanded",
+    description: "New merge tools for products and assets streamline deployment workflows.",
     date: "2025-06-15",
     icon: Shield
   }, {
-    badge: "Analytics+",
-    title: "Real-Time Performance Insights",
-    description: "New dashboard provides instant visibility into system performance.",
+    badge: "Link Builder",
+    title: "Enhanced Staging Review Tools",
+    description: "Multi-market review links now generate with improved validation.",
     date: "2025-06-10",
     icon: TrendingUp
   }, {
-    badge: "AutoDeploy",
-    title: "Zero-Downtime Deployment System",
-    description: "Continuous deployment without service interruption.",
+    badge: "Data Tools",
+    title: "JSON to Excel Converter Upgraded",
+    description: "Properties parser now handles complex nested structures seamlessly.",
     date: "2025-06-05",
     icon: Star
   }];
+
   const feedbackSteps = [{
     icon: Target,
     title: "Submit",
